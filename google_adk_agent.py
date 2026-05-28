@@ -1,9 +1,3 @@
-"""
-G3 - Google Agent Development Kit (ADK): Agente de Cálculo Matemático
-Disciplina: Tópicos em Engenharia de Software - PUC-Campinas
-Checkpoint 2 - Comparação comportamental entre SDKs
-"""
-
 import asyncio
 import time
 from dotenv import load_dotenv
@@ -14,7 +8,6 @@ from google.genai import types
 
 load_dotenv()
 
-# ── Ferramentas de cálculo ───────────────────────────────────────────────────
 
 def calcular_media(numeros: list) -> dict:
     """Calcula a média aritmética de uma lista de números.
@@ -55,11 +48,9 @@ def calcular_maximo(numeros: list) -> dict:
     return {"resultado": max(numeros) if numeros else 0.0, "operacao": "máximo"}
 
 
-# ── Agente ───────────────────────────────────────────────────────────────────
-
 agente = Agent(
     name="agente_calculo_adk",
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
     description="Agente de cálculo matemático usando Google ADK.",
     instruction=(
         "Você é um assistente de cálculo matemático. "
@@ -69,22 +60,20 @@ agente = Agent(
     tools=[calcular_media, calcular_soma, calcular_maximo],
 )
 
-# ── Execução e coleta de métricas ────────────────────────────────────────────
-
 TAREFA = (
     "Tenho as seguintes notas de alunos: 7.5, 8.0, 6.5, 9.0, 7.0. "
     "Calcule a média, a soma total e qual foi a maior nota."
 )
 
 APP_NAME = "g3_comparativo"
-USER_ID  = "usuario_g3"
+USER_ID = "usuario_g3"
 SESSION_ID = "sessao_01"
 
 
 async def executar():
     print("=" * 60)
     print("SDK: Google Agent Development Kit (ADK)")
-    print("Modelo: gemini-1.5-flash")
+    print("Modelo: gemini-2.0-flash-lite")
     print("=" * 60)
     print(f"Tarefa: {TAREFA}\n")
 

@@ -1,9 +1,3 @@
-"""
-G3 - OpenAI Agents SDK: Agente de Cálculo Matemático
-Disciplina: Tópicos em Engenharia de Software - PUC-Campinas
-Checkpoint 2 - Comparação comportamental entre SDKs
-"""
-
 import os
 import time
 from dotenv import load_dotenv
@@ -11,7 +5,6 @@ from agents import Agent, Runner, function_tool
 
 load_dotenv()
 
-# ── Ferramenta de cálculo ────────────────────────────────────────────────────
 
 @function_tool
 def calcular_media(numeros: list[float]) -> float:
@@ -30,7 +23,6 @@ def calcular_maximo(numeros: list[float]) -> float:
     """Retorna o maior número de uma lista."""
     return max(numeros) if numeros else 0.0
 
-# ── Agente ───────────────────────────────────────────────────────────────────
 
 agente = Agent(
     name="AgenteCalculoOpenAI",
@@ -42,8 +34,6 @@ agente = Agent(
     tools=[calcular_media, calcular_soma, calcular_maximo],
     model="gpt-4o-mini",
 )
-
-# ── Execução e coleta de métricas ────────────────────────────────────────────
 
 TAREFA = (
     "Tenho as seguintes notas de alunos: 7.5, 8.0, 6.5, 9.0, 7.0. "
@@ -57,6 +47,7 @@ def executar():
     print("=" * 60)
     print(f"Tarefa: {TAREFA}\n")
 
+    time.sleep(20)
     inicio = time.perf_counter()
     resultado = Runner.run_sync(agente, TAREFA)
     fim = time.perf_counter()
@@ -68,7 +59,6 @@ def executar():
     print("── MÉTRICAS ──")
     print(f"Tempo de execução : {tempo_execucao:.3f}s")
 
-    # Contagem de tool calls via histórico de mensagens
     tool_calls = sum(
         1
         for msg in resultado.new_messages

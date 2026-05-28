@@ -1,16 +1,5 @@
-"""
-G3 - Análise Comparativa: OpenAI Agents SDK vs Google ADK
-Disciplina: Tópicos em Engenharia de Software - PUC-Campinas
-Checkpoint 2
-
-Executa o mesmo agente de cálculo nos dois SDKs e gera
-uma tabela comparativa lado a lado com métricas coletadas.
-"""
-
 import json
 import time
-
-# ── Importa e executa ambos os agentes ───────────────────────────────────────
 
 print("\n🔵 Executando OpenAI Agents SDK...")
 from openai_agent import executar as executar_openai
@@ -23,7 +12,6 @@ def comparar():
     metricas_openai = executar_openai()
     metricas_adk    = executar_adk()
 
-    # ── Tabela comparativa ───────────────────────────────────────────────────
     print("\n")
     print("=" * 70)
     print("          ANÁLISE COMPARATIVA — G3 | PUC-Campinas")
@@ -53,7 +41,6 @@ def comparar():
 
     print("=" * 70)
 
-    # ── Linhas de código (contagem manual documentada) ───────────────────────
     print("\n── CONTAGEM DE LINHAS DE CÓDIGO (linhas funcionais, sem comentários) ──")
     loc = {
         "Definição da ferramenta":  {"openai": "4 linhas (@function_tool + def + docstring + return)",
@@ -83,7 +70,6 @@ def comparar():
   • Modelo de eventos (vs mensagens) oferece granularidade maior para observabilidade.
 """)
 
-    # ── Salva resultado em JSON ──────────────────────────────────────────────
     resultado = {
         "openai": metricas_openai,
         "adk":    metricas_adk,
