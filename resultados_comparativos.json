@@ -1,0 +1,18 @@
+{
+  "openai": {
+    "sdk": "OpenAI Agents SDK",
+    "modelo": "gpt-4o-mini",
+    "resposta": "Aqui estão os resultados das notas dos alunos:\n\n- **Média:** 7.6\n- **Soma total:** 38.0\n- **Maior nota:** 9.0",
+    "tempo_s": 10.536,
+    "tool_calls": 3,
+    "n_mensagens": 4
+  },
+  "adk": {
+    "sdk": "Google ADK",
+    "modelo": "gemini-2.5-flash",
+    "resposta": "A média das notas é 7.6, a soma total das notas é 38 e a maior nota foi 9.0.",
+    "tempo_s": 5.574,
+    "tool_calls": 3,
+    "n_eventos": 3
+  }
+}

@@ -33,7 +33,7 @@ Ambos os SDKs instanciam o **mesmo agente de cálculo matemático** (calcular m�
 ```
 .
 ├── openai_agent.py          # Agente via OpenAI Agents SDK (gpt-4o-mini)
-├── google_adk_agent.py      # Agente via Google ADK (gemini-2.0-flash)
+├── google_adk_agent.py      # Agente via Google ADK (gemini-2.5-flash)
 ├── comparativo.py           # Executa ambos e gera tabela comparativa
 ├── resultados_comparativos.json  # Saídas e métricas (gerado ao rodar)
 ├── requirements.txt         # Dependências
@@ -55,8 +55,8 @@ Ambos os SDKs instanciam o **mesmo agente de cálculo matemático** (calcular m�
 
 ```bash
 # Clone o repositório
-git clone https://github.com/Luis-Felipe011/Trabalho-Final.git
-cd Trabalho-Final
+git clone https://github.com/<seu-usuario>/g3-agents-sdk-comparison
+cd g3-agents-sdk-comparison
 
 # Crie e ative um ambiente virtual
 python -m venv venv
@@ -70,7 +70,18 @@ pip install -r requirements.txt
 ---
 
 ## Configuração das Chaves de API
-crie um arquivo `.env` na raiz:
+
+```bash
+# Linux/macOS
+export OPENAI_API_KEY="sk-..."
+export GOOGLE_API_KEY="AIza..."
+
+# Windows (PowerShell)
+$env:OPENAI_API_KEY="sk-..."
+$env:GOOGLE_API_KEY="AIza..."
+```
+
+Ou crie um arquivo `.env` na raiz:
 
 ```
 OPENAI_API_KEY=sk-...
@@ -132,9 +143,21 @@ Ambos os agentes dispõem das mesmas três ferramentas:
 | Definição de tool | `@function_tool` + type hints | `def` + docstring Args/Returns + `dict` |
 | Execução | `Runner.run_sync(agent, task)` | `Runner` + `SessionService` + `Content` |
 | Gestão de sessão | Automática | Explícita (`InMemorySessionService`) |
-| Modelo | GPT-4o-mini | Gemini 2.0 Flash |
+| Modelo | GPT-4o-mini | Gemini 2.5 Flash |
 | Protocolo A2A | Não | Sim (nativo) |
 | Multi-linguagem | Não (Python-first) | Sim (Java, Go, Python) |
 | Tracing nativo | Sim (dashboard OpenAI) | Sim (Cloud Trace / stdout) |
 | Vendor lock-in | Alto | Médio |
 
+---
+
+## Referências
+
+1. OPENAI. *OpenAI Agents SDK: Official Documentation*. 2025. https://openai.github.io/openai-agents-python
+2. GOOGLE. *Agent Development Kit (ADK): Official Documentation*. 2025. https://google.github.io/adk-docs
+3. OPENAI. *OpenAI Agents SDK: GitHub Repository*. 2025. https://github.com/openai/openai-agents-python
+4. GOOGLE. *ADK: GitHub Repository*. 2025. https://github.com/google/adk-python
+5. WANG, L. et al. A Survey on Large Language Model based Autonomous Agents. *Frontiers of Computer Science*, v. 18, n. 6, 2024.
+6. WU, Q. et al. AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation. arXiv:2308.08155, 2023.
+7. ANTHROPIC. *Building Effective Agents*. 2024. https://anthropic.com/research/building-effective-agents
+8. ANTHROPIC. *Tool Use (Function Calling): Claude Platform Docs*. 2025. https://platform.claude.com/docs

@@ -1,13 +1,29 @@
+"""
+G3 - Google Agent Development Kit (ADK): Agente de Cálculo Matemático
+Disciplina: Tópicos em Engenharia de Software - PUC-Campinas
+Checkpoint 2 - Comparação comportamental entre SDKs
+"""
+
 import asyncio
+import os
 import time
 from dotenv import load_dotenv
+load_dotenv()
+
 from google.adk.agents import Agent
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-load_dotenv()
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "")
+if not GOOGLE_API_KEY:
+    raise EnvironmentError(
+        "\n❌ GOOGLE_API_KEY não encontrada!\n"
+        "Verifique se o arquivo .env contém:\n"
+        "   GOOGLE_API_KEY=AIza...\n"
+    )
 
+# ── Ferramentas de cálculo ───────────────────────────────────────────────────
 
 def calcular_media(numeros: list) -> dict:
     """Calcula a média aritmética de uma lista de números.
@@ -20,8 +36,7 @@ def calcular_media(numeros: list) -> dict:
     """
     if not numeros:
         return {"resultado": 0.0, "operacao": "média"}
-    media = sum(numeros) / len(numeros)
-    return {"resultado": round(media, 4), "operacao": "média"}
+    return {"resultado": round(sum(numeros) / len(numeros), 4), "operacao": "média"}
 
 
 def calcular_soma(numeros: list) -> dict:
@@ -48,34 +63,35 @@ def calcular_maximo(numeros: list) -> dict:
     return {"resultado": max(numeros) if numeros else 0.0, "operacao": "máximo"}
 
 
-agente = Agent(
-    name="agente_calculo_adk",
-    model="gemini-2.0-flash",
-    description="Agente de cálculo matemático usando Google ADK.",
-    instruction=(
-        "Você é um assistente de cálculo matemático. "
-        "Use as ferramentas disponíveis para realizar operações numéricas "
-        "e apresente os resultados de forma clara e objetiva."
-    ),
-    tools=[calcular_media, calcular_soma, calcular_maximo],
-)
+# ── Modelos a tentar (ordem de preferência) ──────────────────────────────────
+MODELOS_CANDIDATOS = [
+    "gemini-2.5-flash",    # confirmado funcional
+    "gemini-2.0-flash",    # fallback
+    "gemini-2.0-flash-lite",
+]
 
 TAREFA = (
     "Tenho as seguintes notas de alunos: 7.5, 8.0, 6.5, 9.0, 7.0. "
     "Calcule a média, a soma total e qual foi a maior nota."
 )
 
-APP_NAME = "g3_comparativo"
-USER_ID = "usuario_g3"
+APP_NAME   = "g3_comparativo"
+USER_ID    = "usuario_g3"
 SESSION_ID = "sessao_01"
 
 
-async def executar():
-    print("=" * 60)
-    print("SDK: Google Agent Development Kit (ADK)")
-    print("Modelo: gemini-2.0-flash-lite")
-    print("=" * 60)
-    print(f"Tarefa: {TAREFA}\n")
+async def _tentar_modelo(modelo: str) -> dict:
+    agente = Agent(
+        name="agente_calculo_adk",
+        model=modelo,
+        description="Agente de cálculo matemático usando Google ADK.",
+        instruction=(
+            "Você é um assistente de cálculo matemático. "
+            "Use as ferramentas disponíveis para realizar operações numéricas "
+            "e apresente os resultados de forma clara e objetiva."
+        ),
+        tools=[calcular_media, calcular_soma, calcular_maximo],
+    )
 
     session_service = InMemorySessionService()
     await session_service.create_session(
@@ -105,35 +121,60 @@ async def executar():
         eventos.append(evento)
     fim = time.perf_counter()
 
-    tempo_execucao = fim - inicio
-
     resposta_final = ""
     tool_calls = 0
     for evento in eventos:
-        if evento.is_final_response():
-            resposta_final = evento.content.parts[0].text
+        if hasattr(evento, "is_final_response") and evento.is_final_response():
+            if evento.content and evento.content.parts:
+                resposta_final = evento.content.parts[0].text
         if hasattr(evento, "content") and evento.content:
             for part in evento.content.parts:
                 if hasattr(part, "function_call") and part.function_call:
                     tool_calls += 1
 
-    print(f"Resposta:\n{resposta_final}\n")
-    print("-" * 60)
-    print("── MÉTRICAS ──")
-    print(f"Tempo de execução : {tempo_execucao:.3f}s")
-    print(f"Chamadas de tool  : {tool_calls}")
-    print(f"Total de eventos  : {len(eventos)}")
-    print("-" * 60)
-
     return {
         "sdk": "Google ADK",
-        "modelo": "gemini-2.0-flash",
+        "modelo": modelo,
         "resposta": resposta_final,
-        "tempo_s": round(tempo_execucao, 3),
+        "tempo_s": round(fim - inicio, 3),
         "tool_calls": tool_calls,
         "n_eventos": len(eventos),
     }
 
 
+async def executar() -> dict:
+    print("=" * 60)
+    print("SDK: Google Agent Development Kit (ADK)")
+    print("=" * 60)
+    print(f"Tarefa: {TAREFA}\n")
+
+    ultimo_erro = None
+    for modelo in MODELOS_CANDIDATOS:
+        print(f"  → Tentando modelo: {modelo} ...", end=" ", flush=True)
+        try:
+            metricas = await _tentar_modelo(modelo)
+            print("OK ✅")
+            print(f"\nModelo usado    : {modelo}")
+            print(f"Resposta:\n{metricas['resposta']}\n")
+            print("-" * 60)
+            print("── MÉTRICAS ──")
+            print(f"Tempo de execução : {metricas['tempo_s']}s")
+            print(f"Chamadas de tool  : {metricas['tool_calls']}")
+            print(f"Total de eventos  : {metricas['n_eventos']}")
+            print("-" * 60)
+            return metricas
+        except Exception as e:
+            msg = str(e)
+            if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                print("quota esgotada ⚠️")
+                ultimo_erro = e
+            else:
+                print(f"erro ❌: {msg[:120]}")
+                ultimo_erro = e
+
+    print("\n❌ Nenhum modelo disponível. Verifique sua GOOGLE_API_KEY.")
+    raise ultimo_erro
+
+
 if __name__ == "__main__":
-    metricas = asyncio.run(executar())
+    asyncio.run(executar())
