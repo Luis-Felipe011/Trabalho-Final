@@ -55,8 +55,8 @@ Ambos os SDKs instanciam o **mesmo agente de cálculo matemático** (calcular m�
 
 ```bash
 # Clone o repositório
-git clone https://github.com/<seu-usuario>/g3-agents-sdk-comparison
-cd g3-agents-sdk-comparison
+git clone https://github.com/Luis-Felipe011/Trabalho-Final.git
+cd Trabalho-Final
 
 # Crie e ative um ambiente virtual
 python -m venv venv
