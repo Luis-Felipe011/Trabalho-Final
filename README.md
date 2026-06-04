@@ -152,7 +152,7 @@ Ambos os agentes dispõem das mesmas três ferramentas:
 
 ## Demonstração
 
-Vídeo demonstrando a execução do projeto e a comparação entre o OpenAI Agents SDK e o Google Agent Development Kit (ADK):
+Vídeo demonstrando a execução do projeto e a comparação entre o OpenAI Agents SDK e o Google ADK:
 
 https://youtu.be/X5C6etguEJY
 
