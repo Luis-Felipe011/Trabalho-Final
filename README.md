@@ -8,10 +8,9 @@ Prof. Douglas H. S. Abreu · 2026/1
 | Nome | Responsabilidade |
 |------|-----------------|
 | Bernardo | Arquitetura comparativa e análise técnica |
-| Geovana | Pesquisa bibliográfica e síntese acadêmica |
+| Geovana | Pesquisa bibliográfica, síntese acadêmica e README |
 | Leonardo | OpenAI Agents SDK — levantamento e primitivas |
-| Luis Felipe | Mini-projeto: script comparativo |
-| Samantha | Google ADK — levantamento e README |
+| Luis Felipe | Mini-projeto: script comparativo e Google ADK — levantamento |
 
 ---
 
@@ -148,6 +147,14 @@ Ambos os agentes dispõem das mesmas três ferramentas:
 | Multi-linguagem | Não (Python-first) | Sim (Java, Go, Python) |
 | Tracing nativo | Sim (dashboard OpenAI) | Sim (Cloud Trace / stdout) |
 | Vendor lock-in | Alto | Médio |
+
+---
+
+## Demonstração
+
+Vídeo demonstrando a execução do projeto e a comparação entre o OpenAI Agents SDK e o Google Agent Development Kit (ADK):
+
+https://youtu.be/X5C6etguEJY
 
 ---
 
